@@ -1,10 +1,11 @@
 package com.oraganizador_filmes.api.controller;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oraganizador_filmes.api.assembler.FilmeAssembler;
 import com.oraganizador_filmes.api.dto.model.FilmeModel;
-import com.oraganizador_filmes.domain.model.Filme;
+import com.oraganizador_filmes.domain.repository.FilmeRepository;
 import com.oraganizador_filmes.domain.service.FilmeService;
 
 @RestController
@@ -26,6 +27,9 @@ public class FilmeController {
 	@Autowired
 	private FilmeAssembler filmeAssembler;
 	
+	@Autowired
+	private FilmeRepository filmeRepository;
+	
 	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
 	public FilmeModel adicionarPorTmdb(@RequestBody String tmdbLink) {
@@ -33,6 +37,11 @@ public class FilmeController {
 		System.out.println("teste branch");
 		return filmeService.criarFilmePorTmdb(tmdbId);
 		
+	}
+	
+	@GetMapping()
+	public List<FilmeModel> listarFilmes() {
+		return filmeAssembler.toCollectionModel(filmeRepository.findAll());
 	}
 	
 	private Long extractMovieId(String url) {
