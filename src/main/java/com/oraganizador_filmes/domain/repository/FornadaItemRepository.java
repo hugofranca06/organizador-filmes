@@ -14,7 +14,7 @@ public interface FornadaItemRepository extends JpaRepository<FornadaItem, Long>{
 	
 	List<FornadaItem> findByFilme(Filme filme);
 	List<FornadaItem> findByFilmeAndAssistidoFalse(Filme filme);
-	Optional<FornadaItem> findByFornadaIdAndFilmeId(Long fornadaId, Long filmeId);
+	Optional<FornadaItem> findByFornadaIdAndFilmeTmdbLink(Long fornadaId, Long tmdbLink);
 	
     @Query("SELECT fi FROM FornadaItem fi WHERE fi.fornada.id = :fornadaId")
     List<FornadaItem> findByFornadaId(@Param("fornadaId") Long fornadaId);

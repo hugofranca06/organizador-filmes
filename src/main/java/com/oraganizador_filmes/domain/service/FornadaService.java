@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.oraganizador_filmes.api.assembler.FornadaAssembler;
 import com.oraganizador_filmes.api.dto.model.FornadaModel;
+import com.oraganizador_filmes.domain.exception.EntidadeNaoEncontradaException;
 import com.oraganizador_filmes.domain.exception.FilmeNaoEncontradoException;
 import com.oraganizador_filmes.domain.exception.FornadaNaoEncontradaException;
 import com.oraganizador_filmes.domain.exception.NegocioException;
@@ -72,9 +73,9 @@ public class FornadaService {
         return fornadaAssembler.toCollectionModel(fornadas);
 	}
 	
-    public void removerFilme(Long fornadaId, Long filmeId) {
-        FornadaItem item = fornadaItemRepository.findByFornadaIdAndFilmeId(fornadaId, filmeId)
-            .orElseThrow(() -> new RuntimeException("Filme não encontrado na fornada"));
+    public void removerFilme(Long fornadaId, Long tmdbLink) {
+        FornadaItem item = fornadaItemRepository.findByFornadaIdAndFilmeTmdbLink(fornadaId, tmdbLink)
+            .orElseThrow(() -> new EntidadeNaoEncontradaException("Filme não encontrado na fornada"));
         
         fornadaItemRepository.delete(item);
     }

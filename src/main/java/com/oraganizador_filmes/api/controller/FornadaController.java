@@ -53,11 +53,11 @@ public class FornadaController {
         return fornadaService.buscarComFilmes(fornadaId);
     }
     
-    @DeleteMapping("/{fornadaId}/filmes/{filmeId}")
+    @DeleteMapping("/{fornadaId}/filmes/{tmdbLink}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removerFilme(
             @PathVariable Long fornadaId, 
-            @PathVariable Long filmeId) {
-        fornadaService.removerFilme(fornadaId, filmeId);
+            @PathVariable Long tmdbLink) {
+        fornadaService.removerFilme(fornadaId, tmdbLink);
     }
 }
