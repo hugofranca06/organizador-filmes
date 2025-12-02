@@ -53,6 +53,8 @@ public class FornadaService {
         item.setFilme(filme);
         item.setAssistido(false);
         
+        fornada.getItens().add(item);
+        
         fornadaItemRepository.save(item);
         
         Fornada fornadaAtualizada = buscarFornada(fornadaId);
