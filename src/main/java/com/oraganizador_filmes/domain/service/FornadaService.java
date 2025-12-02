@@ -1,5 +1,6 @@
 package com.oraganizador_filmes.domain.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oraganizador_filmes.api.assembler.FornadaAssembler;
+import com.oraganizador_filmes.api.dto.model.FornadaItemModel;
 import com.oraganizador_filmes.api.dto.model.FornadaModel;
 import com.oraganizador_filmes.domain.exception.EntidadeNaoEncontradaException;
 import com.oraganizador_filmes.domain.exception.FilmeNaoEncontradoException;
@@ -80,6 +82,42 @@ public class FornadaService {
             .orElseThrow(() -> new EntidadeNaoEncontradaException("Filme não encontrado na fornada"));
         
         fornadaItemRepository.delete(item);
+    }
+    
+    public FornadaModel adicionarDataDeAssistido(Long fornadaItemId, LocalDate dataVisto) {
+    	FornadaItem fornadaItem = fornadaItemRepository.findById(fornadaItemId)
+    			.orElseThrow(() -> new RuntimeException("Fornada não encontrada"));
+    	
+    	fornadaItem.setAssistido(true);
+    	fornadaItem.setDataVisto(dataVisto);
+    	
+    	fornadaItemRepository.save(fornadaItem);
+    	
+    	Fornada fornada = buscarFornada(fornadaItem.getFornada().getId());
+    	
+    	return fornadaAssembler.toModel(fornada);
+    	
+    }
+    
+    public FornadaModel retirarDataDeAssistido(Long fornadaItemId) {
+    	FornadaItem fornadaItem = fornadaItemRepository.findById(fornadaItemId)
+    			.orElseThrow(() -> new RuntimeException("Fornada não encontrada"));
+    	
+		Fornada fornada = fornadaRepository.findById(fornadaItem.getFornada().getId())
+				.orElseThrow(() -> new FornadaNaoEncontradaException("Fornada não encontrada!"));
+		
+		Filme filme = filmeRepository.findByTmdbLink(fornadaItem.getFilme().getTmdbLink())
+				.orElseThrow(() -> new FilmeNaoEncontradoException("Filme não encontrado"));
+		
+		validarFilmeNaoAssistidoUnico(filme, fornada);
+    	
+    	fornadaItem.setAssistido(false);
+    	fornadaItem.setDataVisto(null);
+    	
+    	fornadaItemRepository.save(fornadaItem);
+    	
+    	return fornadaAssembler.toModel(fornada);
+    	
     }
 	
     private Fornada buscarFornada(Long fornadaId) {
