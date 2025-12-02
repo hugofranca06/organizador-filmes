@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oraganizador_filmes.api.assembler.FilmeAssembler;
+import com.oraganizador_filmes.api.dto.input.FilmeInputComFornada;
 import com.oraganizador_filmes.api.dto.model.FilmeModel;
 import com.oraganizador_filmes.domain.repository.FilmeRepository;
 import com.oraganizador_filmes.domain.service.FilmeService;
@@ -32,10 +33,10 @@ public class FilmeController {
 	
 	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
-	public FilmeModel adicionarPorTmdb(@RequestBody String tmdbLink) {
-		Long tmdbId = extractMovieId(tmdbLink);
-		System.out.println("teste branch");
-		return filmeService.criarFilmePorTmdb(tmdbId);
+	public FilmeModel adicionarPorTmdb(@RequestBody FilmeInputComFornada filmeInputComFornada) {
+		
+		Long tmdbId = extractMovieId(filmeInputComFornada.getTmdbLink());
+		return filmeService.criarFilmePorTmdb(tmdbId, filmeInputComFornada.getFornadaId());
 		
 	}
 	

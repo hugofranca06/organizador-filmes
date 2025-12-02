@@ -33,9 +33,12 @@ public class FilmeService {
 	
 	@Autowired
     private final FilmeAssembler filmeAssembler;
+	
+	@Autowired
+	private FornadaService fornadaService;
 
 	
-	public FilmeModel criarFilmePorTmdb (Long tmdbId) {
+	public FilmeModel criarFilmePorTmdb (Long tmdbId, Long fornadaId) {
 		if(filmeRepository.existsByTmdbLink(tmdbId)) {
 			throw new NegocioException("Filme com TMDB ID " + tmdbId + " já existe");
 		}
@@ -48,6 +51,11 @@ public class FilmeService {
 		
 		Filme filmeSalvo = filmeRepository.save(filme);
 		System.out.println(filmeSalvo);
+		
+		if(fornadaId != null) {			
+			fornadaService.adicionarFilme(fornadaId, tmdbId);
+		}
+		
 		
 		return filmeAssembler.toModel(filmeSalvo);
 
